@@ -1,0 +1,25 @@
+# daemonset-tcp-trace.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: tcp-trace
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: tcp-trace
+  template:
+    metadata:
+      labels:
+        app: tcp-trace
+    spec:
+      hostPID: true
+      hostNetwork: true
+      containers:
+        - name: tcp-trace
+          image: tcp-trace:latest
+          imagePullPolicy: Never
+          securityContext:
+            privileged: true
+      tolerations:
+        - operator: Exists

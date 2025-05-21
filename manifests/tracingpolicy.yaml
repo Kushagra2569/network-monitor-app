@@ -1,0 +1,19 @@
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: "monitor-network"
+spec:
+  kprobes: # How to inject (kprobes, tracepoints, uprobes)
+    - call: "tcp_connect" # Where to inject (syscall, kernel function, tracepoint)
+      syscall: false
+      args: # Extra data to include in the event
+        - index: 0
+          type: "sock"
+      selectors:
+        - matchArgs: # How to filter events
+            - index: 0
+              operator: "NotDAddr"
+              values:
+                - 127.0.0.1
+      # matchActions:      # How to react to events (in addition to logging)
+      # - action: Sigkill
